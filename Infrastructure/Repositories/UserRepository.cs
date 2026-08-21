@@ -51,7 +51,11 @@ namespace Infrastructure.Repositories
 
         public bool Delete(int id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            // TaskItems yuklenmezse EF sadece User icin DELETE gonderir ve
+            // FK_TaskItem_User kisitina takilir; Include ile cascade devreye girer
+            var user = _context.Users
+                .Include(u => u.TaskItems)
+                .FirstOrDefault(u => u.Id == id);
             if (user == null)
                 return false;
 
